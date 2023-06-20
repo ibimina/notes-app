@@ -5,6 +5,7 @@ import ListNote from './components/ListNote.vue'
 
 interface NotesType { id: string, title: string, description: string }
 let notes = ref([] as NotesType[])
+localStorage.getItem('notes') ? notes.value = JSON.parse(localStorage.getItem('notes') as string) : localStorage.setItem('notes', JSON.stringify(notes.value))
 let isFormVisible = ref(false)
 let isDeleteVisible = ref(false)
 let note = ref({} as NotesType)
@@ -29,6 +30,7 @@ const addNote = (e: Event) => {
       id: Math.random().toString(36).substring(7)
     })
   }
+  localStorage.setItem('notes', JSON.stringify(notes.value))
   note.value = {} as NotesType
   toggleForm()
 }
@@ -58,6 +60,7 @@ const updateNote = (value: NotesType) => {
     }
     return note
   })
+    localStorage.setItem('notes', JSON.stringify(notes.value))
   toggleForm()
 }
 
