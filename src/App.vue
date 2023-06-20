@@ -3,12 +3,16 @@ import { ref } from 'vue';
 import { RouterView } from 'vue-router'
 import ListNote from './components/ListNote.vue'
 
-interface NotesType { id: string, title: string, description: string }
+interface NotesType { id: string, title: string, description: string, wordCount: number,updatedAt:string }
 let notes = ref([] as NotesType[])
 localStorage.getItem('notes') ? notes.value = JSON.parse(localStorage.getItem('notes') as string) : localStorage.setItem('notes', JSON.stringify(notes.value))
 let isFormVisible = ref(false)
 let isDeleteVisible = ref(false)
 let note = ref({} as NotesType)
+
+
+// Format the date as desired (e.g., YYYY-MM-DD)
+
 
 const handleInput = (e: Event) => {
   e.preventDefault()
@@ -21,18 +25,22 @@ const handleInput = (e: Event) => {
 
 const addNote = (e: Event) => {
   e.preventDefault()
+  let currentDate = new Date();
+  let formattedDate = currentDate.toISOString();
+  let words = note.value.description.trim().split(/\s+/);
   if (note?.value?.id) {
-    updateNote(note.value)
-    console.log(notes.value)
+    updateNote(note.value, words.length)
   } else {
     notes.value.push({
       ...note.value,
+      wordCount: words.length,
+      updatedAt: formattedDate,
       id: Math.random().toString(36).substring(7)
     })
+   sortNotes() 
   }
-  localStorage.setItem('notes', JSON.stringify(notes.value))
   note.value = {} as NotesType
-  toggleForm()
+     toggleForm()
 }
 const toggleForm = () => {
   isFormVisible.value = !isFormVisible.value
@@ -45,25 +53,34 @@ const deleteNote = (id: string) => {
 }
 
 const editNote = (id: string) => {
+  toggleForm()
   note.value = notes.value.find((note) => note.id === id) as NotesType
 }
 
-const updateNote = (value: NotesType) => {
+const updateNote = (value: NotesType, wordCount: number) => {
+  let currentDate = new Date();
+  let formattedDate = currentDate.toISOString(); 
   const { id, title, description } = value
   notes.value = notes.value.map((note) => {
     if (note.id === id) {
       return {
         ...note,
+        wordCount,
         title,
         description,
+        updatedAt: formattedDate
       }
     }
     return note
   })
-    localStorage.setItem('notes', JSON.stringify(notes.value))
-  toggleForm()
-}
+  sortNotes()
 
+}
+const sortNotes = () =>{
+//sort notes by recently updated
+notes.value = notes.value.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+  localStorage.setItem('notes', JSON.stringify(notes.value))
+}
 
 
 </script>
@@ -77,7 +94,8 @@ const updateNote = (value: NotesType) => {
   </header>
   <main class="p-2 md:px-6 mt-5">
     <ul v-if="notes.length > 0" class="grid md:grid-cols-2 gap-4 lg:grid-cols-3">
-      <ListNote v-for="note in notes" :key="note?.id" :note="note" :isDeleteVisible="isDeleteVisible" :toggleDeleteModal="toggleDeleteModal" :deleteNote="deleteNote" :editNote="editNote" />
+      <ListNote v-for="note in notes" :key="note?.id" :note="note" :isDeleteVisible="isDeleteVisible"
+        :toggleDeleteModal="toggleDeleteModal" :deleteNote="deleteNote" :editNote="editNote" />
     </ul>
     <div class="flex items-center justify-center h-40" v-else>
       <p class="text-center font-medium ">
