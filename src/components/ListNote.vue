@@ -6,9 +6,9 @@ defineProps(['note', 'isDeleteVisible', 'toggleDeleteModal', 'deleteNote', 'edit
   <li class="mb-2 bg-gray-100 shadow p-2 rounded">
         <p>Title: {{ note?.title }}</p>
         <p>snippet: {{ note?.description?.substring(0, 9) }}</p>
-        <div class="mt-6">
-          <button @click="toggleDeleteModal" class="py-2 px-4 bg-red-400 rounded text-white">Delete</button>
-          <button @click="editNote(note?.id)" class="py-2 px-4 bg-blue-400 rounded text-white">Edit</button>
+        <div class="mt-6 flex items-center justify-end gap-3">
+          <button @click="toggleDeleteModal" class="py-2 px-4 bg-red-400 bg-delete-image bg-no-repeat bg-center w-8 h-8 rounded text-white"></button>
+          <button @click="editNote(note?.id)" class="py-2 px-4 bg-blue-400 bg-edit-image bg-no-repeat bg-center w-8 h-8 rounded text-white"></button>
         </div>
         <div v-if="isDeleteVisible"
           class="fixed w-full h-full  inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">

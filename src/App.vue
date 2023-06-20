@@ -72,8 +72,8 @@ const updateNote = (value: NotesType) => {
       <p class="text-sm text-gray-500">A simple notes app built with Vue 3 and Vite.</p>
     </div>
   </header>
-  <main class="p-2 mt-5">
-    <ul v-if="notes.length > 0">
+  <main class="p-2 md:px-6 mt-5">
+    <ul v-if="notes.length > 0" class="grid md:grid-cols-2 gap-4 lg:grid-cols-3">
       <ListNote v-for="note in notes" :key="note?.id" :note="note" :isDeleteVisible="isDeleteVisible" :toggleDeleteModal="toggleDeleteModal" :deleteNote="deleteNote" :editNote="editNote" />
     </ul>
     <div class="flex items-center justify-center h-40" v-else>

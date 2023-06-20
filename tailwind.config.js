@@ -2,8 +2,13 @@
 export const purge = ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'];
 export const darkMode = false;
 export const theme = {
-  extend: {}
-};
+  extend: {
+    backgroundImage: {
+      'edit-image': "url('/src/assets/icons8-edit-16.png')",
+      'delete-image': "url('/src/assets/icons8-delete.svg')"
+    }
+  }
+}
 export const variants = {
   extend: {}
 };
